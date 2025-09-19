@@ -1,0 +1,29 @@
+.featured-products-swiper {
+    a {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        h3 {
+            margin: 0;
+            padding: 15px 0;
+        }
+    }
+
+    img {
+        min-height: 330px;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .swiper-slide {
+        background: rgb(248 248 248);
+        border-radius: 5px;
+        box-shadow: 2px 5px 15px #dedede;
+    }
+
+    .swiper-wrapper {
+        padding: 15px 0;
+    }
+}

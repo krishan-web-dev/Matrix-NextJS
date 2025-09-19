@@ -1,0 +1,30 @@
+.video-wrapper {
+  &.rounded-md {
+    border-radius: 30px;
+  }
+  .video-intro {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    background: rgb(255 255 255 / 13%);
+    -webkit-backdrop-filter: blur(15px);
+    backdrop-filter: blur(15px);
+    padding: 15px 25px;
+    border-radius: 10px;
+    h3,
+    p {
+      color: #fff;
+    }
+    h3 {
+      font-weight: 300;
+      margin: 0.8em 0;
+    }
+    p {
+      font-size: 1.1em;
+      font-weight: 400;
+    }
+    a {
+    }
+  }
+}

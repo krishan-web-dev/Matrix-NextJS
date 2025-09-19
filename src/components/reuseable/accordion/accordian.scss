@@ -1,0 +1,65 @@
+/* styles/globals.css */
+.accordion {
+  background-color: #f9f9fa;
+  padding: 20px;
+}
+
+.accordion-item {
+  margin-bottom: 15px;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.accordion-button {
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+}
+
+.accordion-button:not(.collapsed) {
+  color: inherit;
+  background-color: white;
+  box-shadow: none;
+}
+
+.accordion-button:focus {
+  box-shadow: none;
+  border-color: #eee;
+}
+
+.accordion-body {
+  padding-top: 10px;
+}
+
+.accordion-body p {
+  font-weight: 300;
+  line-height: 150%;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.card.accordion-item {
+  .card-header {
+
+    button {
+      padding: 0;
+
+      &::before {
+        left: auto;
+        right: 1.3rem;
+        content: "\ec06";
+        //content: "\ec5b";
+      }
+      &.collapsed::before {
+        content: "\ec5b";
+      }
+    }
+  }
+
+
+  .card-body {
+    padding: 0 1.25rem;
+  }
+
+}

@@ -1,0 +1,145 @@
+$hover-color: #d9df32;
+
+.cards__scroll {
+  .single__card {
+    img {
+      object-fit: cover;
+      aspect-ratio: 1 / 1;
+    }
+
+    &:hover {
+      /*
+      img {
+        -webkit-transform: scale(1.1);
+        transform: scale(1.1);
+        -webkit-transition: 0.2s ease-in-out;
+        transition: 0.2s ease-in-out;
+      }
+        */
+
+      transform: scale(1.1);
+      transition: 0.5s;
+      z-index: 1;
+      span {
+        &.bg {
+          background: rgba(30, 34, 40, 0)
+            linear-gradient(
+              transparent 15%,
+              transparent 20%,
+              rgba(30, 34, 40, 0.3) 55%,
+              rgb(30 34 40 / 86%) 85%,
+              rgb(0 0 0 / 87%) 100%
+            )
+            repeat scroll 0 0;
+        }
+      }
+
+      .card__link_btn_arrow {
+        background-color: $hover-color;
+        border: 1px solid $hover-color;
+        svg path {
+          stroke: #131313;
+        }
+      }
+
+      .card__link div[class*="_arrow"] svg {
+        transform: rotate(-22.5deg) scale(1.4);
+      }
+    }
+
+    &.desktop {
+      opacity: 0;
+      transform: translateY(50px);
+      transition: opacity 1s ease-out, transform 1s ease-out;
+    }
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .cards__scroll {
+    display: flex;
+    flex-wrap: wrap;
+
+    .single__card {
+      flex: calc(25% - calc(5px * 4));
+      margin: 5px;
+
+      &.rounded-md {
+        border-radius: 30px 30px 0 30px;
+      }
+    }
+  }
+}
+
+.card__link {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+
+  z-index: 10;
+}
+
+.card__link_btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  outline: 0;
+  text-decoration: none;
+  color: #000;
+  cursor: pointer;
+}
+
+.card__link_btn > span {
+  display: flex;
+  align-items: center;
+  //overflow: hidden;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  transition: 0.15s;
+}
+
+.card__link_btn_cont {
+  background-color: #f9f8f6;
+  padding: 10px;
+  border-radius: 50% 0 0 0;
+  margin: 0 -10px -10px 0;
+}
+
+.card__link_btn_cont > svg {
+  display: block;
+  width: 20px;
+  position: absolute;
+  top: -17px;
+  right: 0px;
+  transform: rotate(180deg) scale(1.01);
+}
+
+.card__link_btn_arrow > svg {
+  display: block;
+  width: 14px;
+  height: 14px;
+  transition: 0.3s;
+}
+
+.card__link_btn_arrow {
+  width: 50px;
+  height: 50px;
+  background-color: #498137;
+  border: 1px solid #498137;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card__link_btn_cont > svg:last-of-type {
+  top: auto;
+  bottom: 0px;
+  right: auto;
+  left: -12px;
+}
+
+.card__link_btn_arrow > svg path {
+  stroke: #fff;
+}

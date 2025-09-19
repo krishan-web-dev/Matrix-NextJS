@@ -1,0 +1,57 @@
+.product-slider-main {
+
+  .swiper-slide {
+    height: 100vh;
+    max-height: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      height: 100%;
+      width: auto;
+      object-fit: contain;
+    }
+
+    &:hover {
+      cursor: url('/img/icons/assets/zoom.png') 15 15, pointer;
+      //transform: scale(1.05);
+      //transition: transform 0.3s ease-in-out;
+    }
+  }
+
+  .swiper-wrapper,
+  img {
+    max-height: 600px;
+  }
+
+  .cs-nav{
+    border-radius: 50%;
+    background:rgb(221 222 42 / 20%);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+
+    &:hover{
+      background: #407732;
+      transition: background 0.1s ease-in-out;
+      svg{
+        fill: #ddde2a
+      }
+    }
+
+    svg{
+      fill: #437b34;
+    }
+  }
+}
+
+.thumbnail-slider-container {
+  margin-top: 25px;
+
+  .swiper-slide{
+    border: 2px solid #e6e4e4;
+  }
+  img {
+    min-height: 125px;
+  }
+}

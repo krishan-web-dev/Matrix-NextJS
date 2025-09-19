@@ -1,0 +1,528 @@
+// Use this to write your custom SCSS
+// Variables for customization
+$background-color: #3085a3;
+$text-color: #fff;
+$text-opacity: 0.8;
+$transition-duration: 0.35s;
+$transition-delay: 0.05s;
+
+// Brand Background Color
+$brand-bg-primary-color: #75846a;
+$brand-bg-secondary-color: #f8f7e5;
+$brand-bg-third-color: #1d1d1d;
+$color-1: rgb(111, 142, 153);
+$color-2: aliceblue;
+$color-3: #427a33;
+$color-4: #ddde2a;
+$color-5: #ebebeb;
+
+html,
+body {
+  height: max-content;
+}
+
+header {
+  box-shadow: 2px 4px 2px #e1e1e1;
+
+  .fixed {
+    &.navbar-stick {
+      /*background: rgba(0, 0, 0, .05); */
+      background: rgb(255 241 241 / 55%);
+      border-radius: 0;
+      border: 0;
+    }
+  }
+}
+
+.content-wrapper{
+  .container {
+    padding: 3vw 0;
+  }
+}
+
+.bg-color-1 {
+  background: $color-1;
+}
+
+.bg-color-gray {
+  background: $color-5;
+}
+
+.bg-color-2 {
+  background: $color-2;
+}
+
+.bg-color-3 {
+  background: $color-3;
+}
+
+.bg-grd-left {
+  background: rgb(255, 255, 255);
+  background: linear-gradient(222deg,
+      rgba(255, 255, 255, 1) 0%,
+      rgba(63, 118, 50, 1) 100%);
+}
+
+.bg-grd-right {
+  position: relative;
+  //background: linear-gradient(135deg, rgb(195 249 178) 0%, rgb(50 118 81) 100%);
+  background: linear-gradient(137deg,
+      rgb(255 255 255) 0%,
+      rgb(221 222 42 / 44%) 100%);
+}
+
+.bg-grd-right>.container {
+  position: relative;
+  z-index: 1;
+}
+
+.brand-bg-default {
+  position: relative;
+  background-color: #ffffff;
+  background: linear-gradient(166deg, #ffffff, #fffddf);
+  //background: linear-gradient(352deg, rgba(255, 255, 255, 1) 0%, rgb(241 241 241) 45%, rgb(106 126 132) 100%);
+}
+
+.brand-bg-primary {
+  //animation: background-color-animation 10s infinite;
+  background-color: $brand-bg-primary-color;
+}
+
+.brand-bg-secondary {
+  background-color: $brand-bg-secondary-color;
+}
+
+.brand-bg-third {
+  background-color: $brand-bg-third-color;
+}
+
+@keyframes background-color-animation {
+  0% {
+    background-color: $brand-bg-primary-color;
+  }
+
+  25% {
+    background-color: rgb(94 69 108);
+  }
+
+  50% {
+    background-color: $brand-bg-primary-color;
+  }
+
+  100% {}
+}
+
+.navbar-stick {
+  /* From https://css.glass */
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.navbar-brand {
+  a {
+    img {
+      height: 68px;
+    }
+  }
+}
+
+/*
+.glass__navbar {
+  nav {
+    &.navbar {
+      background: #fffffffc;
+      background: rgb(255 255 255 / 80%);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(5px);
+    }
+  }
+}
+*/
+
+//Section Background Noise
+.bg-noise {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  background: url("/img/bg/bg-noise.jpg");
+  background-position: center center;
+  opacity: 0.2;
+  z-index: -1;
+}
+
+.gradient-background {
+  background: linear-gradient(166deg, #75846a, #f8f7e5);
+  background-size: 120% 120%;
+  animation: gradient-animation 12s ease infinite;
+}
+
+@keyframes gradient-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+section {
+  &.watermark {
+    position: relative;
+    z-index: 1;
+
+    background: linear-gradient(346deg, #f2f3eb, #ffffff);
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 40%;
+      /* Center vertically */
+      right: -70%;
+      /* Center horizontally */
+      width: 70%;
+      /* Base size of the watermark */
+      height: 60%;
+      background-image: url("/img/watermark-color.png");
+      /* Use CSS variable for dynamic background */
+      background-size: contain;
+      /* Or 'cover', depending on your needs */
+      background-repeat: no-repeat;
+      //background-position: center;
+      opacity: 0.6;
+      /* Watermark transparency */
+      transform: translate(-50%, -50%) scale(1) rotate(-15deg);
+      /* Scale and re-center */
+      z-index: 0;
+      /* Ensure it stays behind content */
+      filter: grayscale(100%) blur(1px) brightness(0.7);
+    }
+  }
+}
+
+// Navigation
+.glass__navbar {
+
+  .navbar.navbar-clone.fixed{
+    
+    &:not(.navbar-stick) {
+      position: relative;
+    }
+  }
+
+  .offcanvas-nav {
+    //border-bottom: 2px solid #c3c3c3 !important;
+
+    .offcanvas-body {
+      position: relative;
+
+      @media (min-width: 992px) {
+        &::after {
+          content: "";
+          height: 1px;
+          left: 0;
+          position: absolute;
+          top: auto;
+          width: 100%;
+          bottom: 0;
+          background: #f8f7e5;
+          opacity: 1;
+          -webkit-transition: width 0.3s, left 0.3s, right 0.3s, background 0.3s,
+            opacity 0.3s;
+          -moz-transition: width 0.3s, left 0.3s, right 0.3s, background 0.3s,
+            opacity 0.3s;
+          -ms-transition: width 0.3s, left 0.3s, right 0.3s, background 0.3s,
+            opacity 0.3s;
+          -o-transition: width 0.3s, left 0.3s, right 0.3s, background 0.3s,
+            opacity 0.3s;
+          transition: width 0.3s, left 0.3s, right 0.3s, background 0.3s,
+            opacity 0.3s;
+        }
+      }
+    }
+
+    .offcanvas-header {
+      z-index: 99999;
+    }
+  }
+
+  .fixed.navbar-stick {
+    @media (min-width: 992px) {
+      .offcanvas-body {
+        &.order-1 {
+          &::after {
+            width: calc(100% + 20vw);
+            left: -15.9vw;
+          }
+        }
+
+        &.order-3 {
+          &::after {
+            width: calc(100% + 20.8vw);
+            left: -5vw;
+          }
+        }
+      }
+
+      .dropdown-mega {
+        &:hover {
+          .mega-menu.mega-menu {
+            margin-top: 0 !important;
+          }
+        }
+      }
+    }
+  }
+
+  .navbar {
+    backdrop-filter: blur(15px);
+
+    @media (min-width: 992px) {
+      .dropdown-mega {
+        &:hover {
+          .mega-menu.mega-menu {
+            position: fixed;
+            /* top: 100px; */
+            left: 0;
+            width: 100vw;
+            z-index: 1050;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            border-radius: 0 0 5px 5px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 991.98px) {
+  .navbar-expand-lg {
+    .offcanvas-nav {
+      width: 100%;
+    }
+  }
+}
+
+.offcanvas-header {
+  position: relative;
+  height: 75px;
+
+  a {
+    position: absolute;
+    top: 90%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+  }
+}
+
+// Fullscreen Section
+.full__screen {
+  //height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .container {
+    padding: 10vh 15px;
+  }
+}
+
+.reveal {
+  visibility: hidden;
+  position: relative;
+  overflow: hidden;
+}
+
+//SVG underline
+.underline-3.style-3.br-green:after {
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20205%209.37%22%3E%3Cpath%20fill%3D%22%23427a33%22%20d%3D%22M202.47%2C9.37A1191.26%2C1191.26%2C0%2C0%2C0%2C1.79%2C7.48%2C1.67%2C1.67%2C0%2C0%2C1%2C0%2C5.92H0A1.76%2C1.76%2C0%2C0%2C1%2C1.63%2C4.21c67-5.71%2C133.83-5.43%2C200.8-.27A2.75%2C2.75%2C0%2C0%2C1%2C205%2C6.88h0A2.6%2C2.6%2C0%2C0%2C1%2C202.47%2C9.37Z%22%2F%3E%3C%2Fsvg%3E");
+}
+
+.underline-3.style-2.br-yellow:after {
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20208.01%208.3%22%3E%3Cpath%20fill%3D%22%23ddde2a%22%20d%3D%22M64.42%2C2.42Q42.78%2C1.46%2C21.19%2C0c-2.8-.19-4.09.89-3.87%2C2L3.92%2C1.87c-5.13-.05-5.28%2C3.87-.12%2C3.92l60.49.55c46.63%2C2.08%2C93.34%2C2.51%2C139.81%2C1.27%2C5-.13%2C5.39-3.87.13-3.92Z%22%2F%3E%3C%2Fsvg%3E");
+}
+
+//Font Color
+.matrix h1 {
+  font-family: Candara, Arial, sans-serif;
+}
+
+.bg-grd-right {
+
+  h2,
+  h3,
+  p {
+    color: #202020;
+  }
+}
+
+.bg-color-3 {
+  h3 {
+    color: #fff;
+  }
+}
+
+.progress-wrap:after {
+  color: #ddde2a !important;
+}
+
+.progress-wrap svg.progress-circle path {
+  stroke: #ddde2a !important;
+}
+
+// Span Style
+.underline-def {
+  position: relative;
+  z-index: 1;
+
+  &::after {
+    content: "";
+    height: 44%;
+    //background-color: #4fff83;
+    margin-left: -4%;
+    margin-right: 5%;
+    position: absolute;
+    bottom: 6%;
+    left: 0;
+    right: 0;
+    z-index: -1;
+    background: linear-gradient(126deg,
+        rgb(202, 215, 45) 0%,
+        rgb(167 199 153 / 76%) 100%);
+  }
+}
+
+// Video Block Button Style
+.video-wrapper .btn-def.btn-circle.ripple::after {
+  background: $color-4;
+}
+
+.video-wrapper .btn-def.btn-circle.ripple::before {
+  background: #54903a;
+}
+
+.video-wrapper .btn-def {
+  --bs-btn-bg: $color-4;
+  --bs-btn-border-color: $color-4;
+  --bs-btn-hover-bg: $color-4;
+  --bs-btn-hover-border-color: $color-4;
+  --bs-btn-active-bg: $color-4;
+  --bs-btn-active-border-color: $color-4;
+  --bs-btn-color: #fff;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-color: #fff;
+}
+
+//Product Page Style
+.product-info {
+  background: aliceblue;
+  padding: 15px 25px;
+
+  .accordion-wrapper {
+    .accordion-item {
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    &.product__meta {
+      background: #00000008;
+      padding: 20px;
+      backdrop-filter: blur(15px);
+      margin-bottom: 20px;
+    }
+  }
+}
+
+.product__sales {
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 25px;
+
+  margin-bottom: 20px;
+
+  // Product Page Button Style
+  .enuire-now {
+    font-family: var(--font-open-sans);
+    font-weight: 500;
+    background-image: linear-gradient(to right,
+        #e53935 0%,
+        #e35d5b 51%,
+        #e53935 100%);
+
+    padding: 10px 25px;
+    text-align: center;
+    text-transform: uppercase;
+    transition: 0.5s;
+    background-size: 200% auto;
+    color: white;
+    box-shadow: 0 0 20px #eee;
+    border-radius: 5px;
+    border: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    transition:
+      background 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
+      transform 0.3s ease,
+      box-shadow 0.4s ease;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+
+    i {
+      margin-right: 5px;
+    }
+
+    &:hover {
+      background-position: right center;
+      /* change the direction of the change here */
+      color: #fff;
+      text-decoration: none;
+    }
+  }
+}
+
+/* Animation for Pulse Effect */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(251, 110, 110, 0.4);
+  }
+
+  70% {
+    box-shadow: 0 0 0 15px rgba(251, 110, 110, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(251, 110, 110, 0);
+  }
+}
+
+.product__sales .enuire-now{
+  animation: pulse 3s infinite;
+}
+
+/* Hover Ripple Effect */
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}

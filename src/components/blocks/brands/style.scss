@@ -1,0 +1,66 @@
+@keyframes logoLoopNormal {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(calc(-50% - 1rem));
+  }
+}
+
+@keyframes logoLoopReverse {
+  0% {
+    transform: translateX(calc(-50% - 1rem));
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.logo-loop_line {
+  grid-column-gap: 2rem;
+  grid-row-gap: 2rem;
+  mix-blend-mode: multiply;
+  display: flex;
+
+  .logo-loop_list {
+    grid-column-gap: 6rem;
+    white-space: nowrap;
+    grid-template-rows: auto;
+    grid-template-columns: 12.5rem;
+    grid-auto-columns: 12.5rem;
+    grid-auto-flow: column;
+    justify-content: flex-end;
+    place-items: center start;
+    margin-left: 4rem;
+    display: flex;
+
+    .logo-loop_wrapper {
+      justify-content: center;
+      align-items: flex-start;
+      display: flex;
+
+      img {
+        object-fit: contain;
+        width: auto;
+        max-width: 12rem;
+        height: auto;
+        min-height: auto;
+        max-height: 4rem;
+      }
+    }
+  }
+
+  &:not(.reverse) {
+    margin-bottom: 35px;
+    animation: logoLoopNormal 30s infinite linear;
+  }
+
+  animation: logoLoopReverse 30s infinite linear;
+}
+
+.brands {
+  position: relative;
+
+  overflow: hidden;
+  z-index: 1;
+}
