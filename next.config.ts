@@ -4,6 +4,15 @@ import path from "path";
 const nextConfig: NextConfig = {
   // output: "export", // UNCOMMENT TO ENABLE STATIC EXPORT.
   // images: { unoptimized: true }, // UNCOMMENT TO ENABLE STATIC EXPORT.
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'app.wps',
+        pathname: '/wp-content/uploads/**',
+      },
+    ],
+  },
   reactStrictMode: false,
   webpack: (config) => {
     // Add alias for @ to point to the src directory
