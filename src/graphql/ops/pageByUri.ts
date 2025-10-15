@@ -14,7 +14,6 @@ export const PAGE_BY_URI = gql`
           ...ImageAnimatedTextBlock
           ...VideoBlock
           ...ServicesListBlock
-          ...NewsBlock
         }
       }
     }
