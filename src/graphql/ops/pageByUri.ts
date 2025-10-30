@@ -14,6 +14,20 @@ export const PAGE_BY_URI = gql`
           ...ImageAnimatedTextBlock
           ...VideoBlock
           ...ServicesListBlock
+          ...MasonryImageTextBlock
+          ...CounterBlock
+          ...LogoCarouselBlock
+          ...NewsBlock
+          ...TestimonialBlock
+          ...TimelineBlock
+          ...TeamMembersBlock
+          ...FAQBlock
+          ...MapBlock
+          ...ContactFormBlock
+          ...TeamMembersBlock
+          ...FAQBlock
+          ...MapBlock
+          ...ContactFormBlock
         }
       }
     }

@@ -1,31 +1,36 @@
-// components/BrandTicker.tsx
 "use client";
 
 import { useEffect, useRef } from "react";
 import Swiper from "swiper";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
+import Image from "next/image";
+import { wpToSeoPath } from "@/lib/utils/wpToSeoPath";
+import "./BrandTicker.scss";
 
-import "./BrandTicker.scss"; // Import your CSS styles
-
-type Brand = {
-  src: string;
-  title: string;
+// ---------------- Types from GraphQL ----------------
+type LogoNode = {
+  title?: string | null;
+  sourceUrl?: string | null;
 };
 
-const brands: Brand[] = [
-  { src: "/img/brands/kgcrane.jpg", title: "Compressed Air Solutions" },
-  { src: "/img/brands/mutrade.png", title: "Compressed Air Solutions" },
-  { src: "/img/brands/Endo-Kogyo.png", title: "Compressed Air Solutions" },
-  { src: "/img/brands/wernerfinley.png", title: "Compressed Air Solutions" },
-  { src: "/img/brands/logo-rotary.png", title: "Compressed Air Solutions" },
-  // Add more brands here...
-];
+export type LogoCarouselBlockData = {
+  __typename?: string | null;
+  title?: string | null;
+  description?: string | null;
+  logo?: { nodes?: LogoNode[] | null } | null;
+  style?: string | null;
+  verticalAlign?: string | null;
+  background?: string | null;
+  backgroundImage?: { node?: { sourceUrl?: string | null } | null } | null;
+  disablePaddingTop?: boolean | null;
+  disablePaddingBottom?: boolean | null;
+  sectionId?: string | null;
+  sectionClass?: string | null;
+};
 
-// ✅ Duplicate the array so Swiper has enough slides for loop mode
-const repeatedBrands = [...brands, ...brands, ...brands];
-
-export default function BrandTicker() {
+// ---------------- Component ----------------
+export default function BrandTicker({ data }: { data: LogoCarouselBlockData }) {
   const rtlRef = useRef<HTMLDivElement>(null);
   const ltrRef = useRef<HTMLDivElement>(null);
 
@@ -51,8 +56,8 @@ export default function BrandTicker() {
       });
     };
 
-    const rtlSwiper = initSwiper(rtlRef.current, false); // right-to-left
-    const ltrSwiper = initSwiper(ltrRef.current, true);  // left-to-right
+    const rtlSwiper = initSwiper(rtlRef.current, false);
+    const ltrSwiper = initSwiper(ltrRef.current, true);
 
     const handleResize = () => {
       gap = isDesktop() ? 0.0285 * window.innerWidth : 15;
@@ -68,45 +73,95 @@ export default function BrandTicker() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // ---------------- Data & Styles ----------------
+  const padTop = data?.disablePaddingTop ? "pt-0" : "pt-12";
+  const padBottom = data?.disablePaddingBottom ? "pb-0" : "pb-12";
+  const sectionCls = `wrapper brand-ticker ${padTop} ${padBottom} ${data?.sectionClass ?? ""}`.trim();
+
+  const bgColor = data?.background ?? "";
+  const bgImage = wpToSeoPath(data?.backgroundImage?.node?.sourceUrl);
+  const hasOverlay = data?.style?.includes("overlay");
+
+  const logos = data?.logo?.nodes ?? [];
+  const repeatedLogos = [...logos, ...logos, ...logos]; // ensures continuous loop
+
   return (
-    <section className="wrapper" style={{ position: "relative", backgroundColor: "#222", zIndex: 1 }}>
+    <section
+      id={data?.sectionId ?? "LogoTicker"}
+      className={`${sectionCls} ${hasOverlay ? "bg-overlay bg-overlay-800 text-white" : ""}`}
+      style={{
+        backgroundColor: bgColor || undefined,
+        backgroundImage: bgImage ? `url(${bgImage})` : undefined,
+      }}
+    >
       <div className="bg-noise"></div>
-      <div className="container">
-        <div className="row">
-          <div className="col-12 text-center">
-            <h2>Our Trusted by Brands</h2>
-            <p>
-              We <span className="underline">bring solutions</span> to make life
-              easier for our customers.
-            </p>
+      <div className="container py-14 py-md-16">
+        {/* Section Title */}
+        {(data?.title || data?.description) && (
+          <div className="row justify-content-center mb-8">
+            <div className="col-md-8 text-center">
+              {data?.title && (
+                <h3
+                  className="display-2 ls-xs mb-2"
+                  dangerouslySetInnerHTML={{ __html: data.title }}
+                />
+              )}
+              {data?.description && (
+                <p
+                  className="lead fs-lg"
+                  dangerouslySetInnerHTML={{ __html: data.description }}
+                />
+              )}
+            </div>
           </div>
-        </div>
-        <div className="row">
-          <div className="brand-ticker__row">
-            {/* Right-to-left ticker */}
-            <div ref={rtlRef} className="swiper brand-ticker__slider">
-              <div className="swiper-wrapper">
-                {repeatedBrands.map((brand, idx) => (
+        )}
+
+        {/* Logo Ticker */}
+        <div className="brand-ticker__row">
+          {/* Right-to-left ticker */}
+          <div ref={rtlRef} className="swiper brand-ticker__slider">
+            <div className="swiper-wrapper">
+              {repeatedLogos.map((brand, idx) => {
+                const imgSrc = wpToSeoPath(brand.sourceUrl);
+                return (
                   <div key={`rtl-${idx}`} className="swiper-slide brand-ticker__slide">
-                    <img src={brand.src} alt={brand.title} />
+                    {imgSrc && (
+                      <Image
+                        src={imgSrc}
+                        alt={brand.title ?? "Brand Logo"}
+                        width={300}
+                        height={180}
+                        className="brand__logo"
+                      />
+                    )}
                   </div>
-                ))}
-              </div>
+                );
+              })}
             </div>
+          </div>
 
-            {/* Left-to-right ticker */}
-            <div ref={ltrRef} className="swiper brand-ticker__slider">
-              <div className="swiper-wrapper">
-                {repeatedBrands.map((brand, idx) => (
+          {/* Left-to-right ticker */}
+          <div ref={ltrRef} className="swiper brand-ticker__slider">
+            <div className="swiper-wrapper">
+              {repeatedLogos.map((brand, idx) => {
+                const imgSrc = wpToSeoPath(brand.sourceUrl);
+                return (
                   <div key={`ltr-${idx}`} className="swiper-slide brand-ticker__slide">
-                    <img src={brand.src} alt={brand.title} />
+                    {imgSrc && (
+                      <Image
+                        src={imgSrc}
+                        alt={brand.title ?? "Brand Logo"}
+                        width={300}
+                        height={180}
+                        className="brand__logo"
+                      />
+                    )}
                   </div>
-                ))}
-              </div>
+                );
+              })}
             </div>
           </div>
         </div>
-
       </div>
     </section>
   );

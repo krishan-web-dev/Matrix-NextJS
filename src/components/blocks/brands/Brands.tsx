@@ -5,104 +5,176 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { wpToSeoPath } from "@/lib/utils/wpToSeoPath";
+
+import "./style.scss";
 
 gsap.registerPlugin(ScrollTrigger);
-// CUSTOM DATA
 
-import './style.scss';
+// ---------------- Types from GraphQL ----------------
+type MediaNode = { title?: string | null; sourceUrl?: string | null };
+type LogoNode = { nodes?: MediaNode[] | null };
 
-export default function Brands() {
+export type LogoCarouselBlockData = {
+  __typename?: string | null;
+  title?: string | null;
+  description?: string | null;
+  logo?: LogoNode | null;
+  style?: string | null;
+  verticalAlign?: string | null;
+  background?: string | null;
+  backgroundImage?: { node?: { sourceUrl?: string | null } | null } | null;
+  disablePaddingTop?: boolean | null;
+  disablePaddingBottom?: boolean | null;
+  sectionId?: string | null;
+  sectionClass?: string | null;
+};
 
-  const sectionRef = useRef(null);
+// ---------------- Component ----------------
+export default function Brands({ data }: { data: LogoCarouselBlockData }) {
+  const sectionRef = useRef<HTMLDivElement | null>(null);
 
-  // GSAP Animation Hook
+  // GSAP Animation
   useGSAP(() => {
+    if (!sectionRef.current) return;
     gsap.from(sectionRef.current, {
       opacity: 0,
       x: 100,
-      duration: 2,
+      duration: 1.5,
       ease: "power3.out",
       scrollTrigger: {
         trigger: sectionRef.current,
-        start: "top 85%", // Triggers when 85% of the section is visible
+        start: "top 85%",
         toggleActions: "play none none reset",
-        //once: true,
       },
     });
   }, []);
 
-  const brands = [
-    {
-      src: '/img/brands/kgcrane.jpg',
-      title: 'Compressed Air Solutions',
-    },
-    {
-      src: '/img/brands/mutrade.png',
-      title: 'Compressed Air Solutions',
-    },
-    {
-      src: '/img/brands/Endo-Kogyo.png',
-      title: 'Compressed Air Solutions',
-    },
-    {
-      src: '/img/brands/wernerfinley.png',
-      title: 'Compressed Air Solutions',
-    },
-    {
-      src: '/img/brands/logo-rotary.png',
-      title: 'Compressed Air Solutions',
-    },
-    // Add more card data as needed
-  ];
+  const logos = data?.logo?.nodes ?? [];
+
+  const padTop = data?.disablePaddingTop ? "pt-0" : "pt-12";
+  const padBottom = data?.disablePaddingBottom ? "pb-0" : "pb-12";
+  const sectionCls = `wrapper ${padTop} ${padBottom} ${data?.sectionClass ?? ""}`.trim();
+
+  // Background settings
+  const bgColor = data?.background ?? "";
+  const bgImage = wpToSeoPath(data?.backgroundImage?.node?.sourceUrl);
+  const hasOverlay = data?.style?.includes("overlay");
+
   return (
-    <section ref={sectionRef} className="wrapper" style={{ position: "relative" }}>
+    <section
+      ref={sectionRef}
+      id={data?.sectionId ?? "LogoCarousel"}
+      className={`${sectionCls} ${hasOverlay ? "bg-overlay bg-overlay-800 text-white" : ""}`}
+      style={{
+        backgroundColor: bgColor || undefined,
+        backgroundImage: bgImage ? `url(${bgImage})` : undefined,
+      }}
+    >
       <div className="bg-noise"></div>
       <div className="container-fluid py-14 py-md-16 brands">
-        <div className="row justify-content-md-center mb-12">
-          <div className="col-md-8 text-center">
-            <h3 className="display-2 ls-xs mb-2">Our Trusted by Brands</h3>
-            <p className="lead fs-lg pe-xxl-5">
-              We <span className="underline">bring solutions</span> to make life
-              easier for our customers.
-            </p>
+        {/* ---------------- Header ---------------- */}
+        {(data?.title || data?.description) && (
+          <div className="row justify-content-md-center mb-12">
+            <div className="col-md-8 text-center">
+              {data?.title && (
+                <h3
+                  className="display-2 ls-xs mb-2"
+                  dangerouslySetInnerHTML={{ __html: data.title }}
+                />
+              )}
+              {data?.description && (
+                <p
+                  className="lead fs-lg pe-xxl-5"
+                  dangerouslySetInnerHTML={{ __html: data.description }}
+                />
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
-
+        {/* ---------------- Logo Loop Animation ---------------- */}
         <div className="logo-loop_line">
           <div className="logo-loop_list">
-            {brands.map((item, index) => (
-              <div className="logo-loop_wrapper" key={index}>
-                <Image src={item.src} alt="demo" width={450} height={301} />
-              </div>
-            ))}
+            {logos.map((item, index) => {
+              const imgSrc = wpToSeoPath(item.sourceUrl);
+              return (
+                <div className="logo-loop_wrapper" key={`loop1-${index}`}>
+                  {imgSrc && (
+                    <Image
+                      src={imgSrc}
+                      alt={item.title ?? "Brand Logo"}
+                      width={450}
+                      height={301}
+                      className="brand__logo"
+                    />
+                  )}
+                </div>
+              );
+            })}
           </div>
+
+          {/* second loop for continuous animation */}
           <div className="logo-loop_list">
-            {brands.map((item, index) => (
-              <div className="logo-loop_wrapper" key={index}>
-                <Image src={item.src} alt="demo" width={450} height={301} />
-              </div>
-            ))}
+            {logos.map((item, index) => {
+              const imgSrc = wpToSeoPath(item.sourceUrl);
+              return (
+                <div className="logo-loop_wrapper" key={`loop2-${index}`}>
+                  {imgSrc && (
+                    <Image
+                      src={imgSrc}
+                      alt={item.title ?? "Brand Logo"}
+                      width={450}
+                      height={301}
+                      className="brand__logo"
+                    />
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
+
+        {/* Reverse scrolling line */}
         <div className="logo-loop_line reverse">
           <div className="logo-loop_list">
-            {brands.map((item, index) => (
-              <div className="logo-loop_wrapper" key={index}>
-                <Image src={item.src} alt="demo" width={450} height={301} />
-              </div>
-            ))}
+            {logos.map((item, index) => {
+              const imgSrc = wpToSeoPath(item.sourceUrl);
+              return (
+                <div className="logo-loop_wrapper" key={`rev1-${index}`}>
+                  {imgSrc && (
+                    <Image
+                      src={imgSrc}
+                      alt={item.title ?? "Brand Logo"}
+                      width={450}
+                      height={301}
+                      className="brand__logo"
+                    />
+                  )}
+                </div>
+              );
+            })}
           </div>
+
           <div className="logo-loop_list">
-            {brands.map((item, index) => (
-              <div className="logo-loop_wrapper" key={index}>
-                <Image src={item.src} alt="demo" width={450} height={301} />
-              </div>
-            ))}
+            {logos.map((item, index) => {
+              const imgSrc = wpToSeoPath(item.sourceUrl);
+              return (
+                <div className="logo-loop_wrapper" key={`rev2-${index}`}>
+                  {imgSrc && (
+                    <Image
+                      src={imgSrc}
+                      alt={item.title ?? "Brand Logo"}
+                      width={450}
+                      height={301}
+                      className="brand__logo"
+                    />
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
-
-
       </div>
     </section>
   );

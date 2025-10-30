@@ -1,65 +1,144 @@
 "use client";
 
-import { useRef } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useQuery } from "@apollo/client/react";
+import Image from "next/image";
+import clsx from "clsx";
 
-// GLOBAL CUSTOM COMPONENTS
-import Carousel from "components/reuseable/Carousel";
-import { TestimonialCard3 } from "components/reuseable/testimonial-cards";
-// CUSTOM UTILS LIBRARY FUNCTIONS
-import carouselBreakpoints from "utils/carouselBreakpoints";
-// CUSTOM DATA
-import { testimonialList2 } from "data/testimonial-list";
+import Carousel from "@/components/reuseable/Carousel";
+import { TESTIMONIALS_CARD } from "@/graphql/ops/testimonialsCard";
+import { wpToSeoPath } from "@/lib/utils/wpToSeoPath";
+import carouselBreakpoints from "@/utils/carouselBreakpoints";
 
-export default function Testimonial4() {
-  const sectionRef = useRef(null);
+// ---------------- Types ----------------
+type Media = { node?: { title?: string | null; sourceUrl?: string | null } | null };
+type Testimonial = {
+  databaseId?: number | null;
+  title?: string | null;
+  testimonials?: {
+    description?: string | null;
+    designation?: string | null;
+    image?: Media | null;
+  } | null;
+};
+type Division = {
+  databaseId?: number;
+  name?: string;
+  testimonials?: { nodes?: Testimonial[] | null } | null;
+};
 
-  // GSAP Animation Hook
-  useGSAP(() => {
-    gsap.from(sectionRef.current, {
-      opacity: 0,
-      y: 100,
-      duration: 2,
-      ease: "power3.out",
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top 85%", // Triggers when 85% of the section is visible
-        toggleActions: "play none none reset",
-        //once: true,
-      },
-    });
-  }, []);
+export type TestimonialBlockData = {
+  __typename?: string | null;
+  title?: string | null;
+  titleSize?: string | null;
+  description?: string | null;
+  layout?: string | null;
+  selectBy?: string | null;
+  numberOfPosts?: number | null;
+  selectTag?: { nodes?: { databaseId: number; name?: string | null }[] | null } | null;
+  testimonialItems?: { nodes?: Testimonial[] | null } | null;
+  background?: string | null;
+  backgroundImage?: { node?: { sourceUrl?: string | null } | null } | null;
+  disablePaddingTop?: boolean | null;
+  disablePaddingBottom?: boolean | null;
+  sectionId?: string | null;
+  sectionClass?: string | null;
+};
+
+// ---------------- Component ----------------
+export default function Testimonial4({ data }: { data: TestimonialBlockData }) {
+  const padTop = data?.disablePaddingTop ? "pt-0" : "pt-12";
+  const padBottom = data?.disablePaddingBottom ? "pb-0" : "pb-12";
+  const sectionCls = `wrapper ${padTop} ${padBottom} ${data?.sectionClass ?? ""}`.trim();
+
+  const isLatest = data?.layout === "featured" && data?.selectBy === "latest";
+  const isManual = data?.layout === "featured" && data?.selectBy === "manual";
+
+  // ---------------- Fetch testimonials dynamically ----------------
+  const divisionIds =
+    data?.selectTag?.nodes?.map((tag) => tag.databaseId.toString());
+  const postCount = data?.numberOfPosts ?? 3;
+
+  const { data: testimonialsData, loading, error } = useQuery(TESTIMONIALS_CARD, {
+    variables: { divisionIds, first: postCount },
+    skip: !isLatest,
+  });
+
+
+  // Flatten testimonials from all divisions
+  const fetchedTestimonials: Testimonial[] =
+    testimonialsData?.terms?.nodes
+      ?.flatMap((div: Division) => div.testimonials?.nodes || [])
+      ?.filter(Boolean) ?? [];
+
+  const manualTestimonials: Testimonial[] = data?.testimonialItems?.nodes ?? [];
+  const testimonials = isLatest ? fetchedTestimonials : manualTestimonials;
 
   return (
-    <section ref={sectionRef} className="wrapper">
-      <div className="container">
-        <div className="wrapper bg-light">
-          <div className="container py-14 py-md-16">
-            <div className="row">
-              <div className="col-md-10 offset-md-1 col-lg-8 offset-lg-2 mx-auto text-center">
-                <h3 className="display-4 mb-6 px-xl-10 px-xxl-15">
-                  Don't take our word for it. See what customers are saying about us.
-                </h3>
-              </div>
-            </div>
-
-            <div className="swiper-container dots-closer mb-6">
-              <Carousel
-                spaceBetween={0}
-                autoplay={true}
-                grabCursor
-                navigation={false}
-                breakpoints={carouselBreakpoints}>
-                {testimonialList2.map((item, i) => (
-                  <div className="item-inner" key={i}>
-                    <TestimonialCard3 {...item} />
-                  </div>
-                ))}
-              </Carousel>
+    <section id={data?.sectionId ?? "Testimonials"} className={sectionCls}>
+      <div className="container py-14 py-md-16">
+        {(data?.title || data?.description) && (
+          <div className="row mb-10 text-center">
+            <div className="col-lg-8 mx-auto">
+              {data?.title && (
+                <h2
+                  className={`display-4 ${data?.titleSize ?? "h2"}`}
+                  dangerouslySetInnerHTML={{ __html: data.title }}
+                />
+              )}
+              {data?.description && (
+                <p
+                  className="lead fs-lg"
+                  dangerouslySetInnerHTML={{ __html: data.description }}
+                />
+              )}
             </div>
           </div>
+        )}
+
+        {/* Testimonials Carousel */}
+        <div className="swiper-container dots-closer mb-6">
+          <Carousel
+            spaceBetween={0}
+            autoplay
+            grabCursor
+            navigation={false}
+            breakpoints={carouselBreakpoints}
+          >
+            {testimonials.map((item, index) => {
+              const t = item.testimonials ?? {};
+              const imgSrc = wpToSeoPath(t.image?.node?.sourceUrl);
+
+              return (
+                <div className="item-inner" key={item.databaseId ?? index}>
+                  <div className={clsx("card", "shadow-lg")}>
+                    <div className="card-body">
+                      <span className="ratings five mb-3" />
+                      <blockquote className="icon mb-0">
+                        <p>“{t.description ?? ""}”</p>
+                        <div className="blockquote-details">
+                          {imgSrc && (
+                            <figure className="rounded-circle w-12 overflow-hidden">
+                              <Image
+                                alt={t.image?.node?.title ?? item.title ?? "Client"}
+                                width={100}
+                                height={100}
+                                src={imgSrc}
+                                className="w-100 h-auto"
+                              />
+                            </figure>
+                          )}
+                          <div className="info">
+                            <h5 className="mb-0">{item.title}</h5>
+                            {t.designation && <p className="mb-0">{t.designation}</p>}
+                          </div>
+                        </div>
+                      </blockquote>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </Carousel>
         </div>
       </div>
     </section>

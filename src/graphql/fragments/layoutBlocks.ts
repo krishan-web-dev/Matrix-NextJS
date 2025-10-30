@@ -13,8 +13,16 @@ export const HERO_SLIDER_BLOCK = gql`
         titleSize
         description
         mediaType
-        image { node { sourceUrl } }
-        videoThumbnail { node { sourceUrl } }
+        image {
+          node {
+            sourceUrl
+          }
+        }
+        videoThumbnail {
+          node {
+            sourceUrl
+          }
+        }
         videoUrl
       }
     }
@@ -29,18 +37,34 @@ export const IMAGE_ANIMATED_TEXT_BLOCK = gql`
   fragment ImageAnimatedTextBlock on PageLayoutsLayoutsImageAnimeTextBlockSectionLayout {
     title
     titleSize
-    animatedText { text }
+    animatedText {
+      text
+    }
     description
     imagePosition
-    image { node { sourceUrl } }
-    link { title url }
-    link2 { title url }
+    image {
+      node {
+        sourceUrl
+      }
+    }
+    link {
+      title
+      url
+    }
+    link2 {
+      title
+      url
+    }
     disablePaddingTop
     disablePaddingBottom
     sectionClass
     sectionId
     background
-    backgroundImage { node { sourceUrl } }
+    backgroundImage {
+      node {
+        sourceUrl
+      }
+    }
   }
 `;
 
@@ -49,9 +73,17 @@ export const VIDEO_BLOCK = gql`
     title
     videoDescription
     videoUrl
-    videoThumbnail { node { sourceUrl } }
+    videoThumbnail {
+      node {
+        sourceUrl
+      }
+    }
     background
-    backgroundImage { node { sourceUrl } }
+    backgroundImage {
+      node {
+        sourceUrl
+      }
+    }
     disablePaddingTop
     disablePaddingBottom
     sectionId
@@ -67,8 +99,15 @@ export const SERVICES_LIST_BLOCK = gql`
       ... on PageLayoutsLayoutsItemsItemLayout {
         title
         description
-        image { node { sourceUrl } }
-        link { title url }
+        image {
+          node {
+            sourceUrl
+          }
+        }
+        link {
+          title
+          url
+        }
       }
     }
     background
@@ -77,29 +116,6 @@ export const SERVICES_LIST_BLOCK = gql`
     disablePaddingBottom
     sectionId
     sectionClass
-  }
-`;
-
-/**
- * Reusable card for post listings
- * (kept minimal — expand if you need more fields)
- */
-export const POST_CARD = gql`
-  fragment PostCard on Post {
-    id
-    databaseId
-    title
-    slug
-    uri
-    excerpt
-    featuredImage {
-      node {
-        sourceUrl
-        altText
-      }
-    }
-    categories { nodes { databaseId name slug } }
-    tags { nodes { databaseId name slug } }
   }
 `;
 
@@ -149,7 +165,11 @@ export const COUNTER_BLOCK = gql`
       }
     }
     background
-    backgroundImage { node { sourceUrl } }
+    backgroundImage {
+      node {
+        sourceUrl
+      }
+    }
     verticalAlign
     style
     disablePaddingTop
@@ -175,7 +195,11 @@ export const LOGO_CAROUSEL_BLOCK = gql`
     style
     verticalAlign
     background
-    backgroundImage { node { sourceUrl } }
+    backgroundImage {
+      node {
+        sourceUrl
+      }
+    }
     disablePaddingTop
     disablePaddingBottom
     sectionId
@@ -184,60 +208,108 @@ export const LOGO_CAROUSEL_BLOCK = gql`
 `;
 
 /**
- * News Block
- * - newsCategory: Category (not Tag)
- * - selectTag: use databaseId (works with WPGraphQL filters)
- * - newsItems: polymorphic (add __typename + fragments)
+ * NEWS Carousel Block
  */
-export const NEWS_BLOCK = gql`
-  ${POST_CARD}
+export const NEWS_CAROUSEL_BLOCK = gql`
   fragment NewsBlock on PageLayoutsLayoutsNewsSectionLayout {
     title
     titleSize
     description
-    selectBy
     layout
+    selectBy
     numberOfPosts
-
     newsCategory {
       nodes {
-        ... on Category {
-          databaseId
+        ... on Tag {
+          id
           name
-          slug
         }
       }
     }
+    selectTag {
+      nodes {
+        termTaxonomyId
+        name
+      }
+    }
+    newsItems {
+      nodes {
+        ... on Post {
+          id
+          title
+          content
+          featuredImage {
+            node {
+              title
+              sourceUrl
+            }
+          }
+        }
+      }
+    }
+    background
+    backgroundImage {
+      node {
+        sourceUrl
+      }
+    }
+    disablePaddingTop
+    disablePaddingBottom
+    sectionId
+    sectionClass
+    columnCount
+  }
+`;
 
+/**
+ * Testimonial Block
+ */
+export const TESTIMONIAL_BLOCK = gql`
+  fragment TestimonialBlock on PageLayoutsLayoutsTestimonialSectionLayout {
+    title
+    titleSize
+    description
+    layout
+    selectBy
+    numberOfPosts
+    testimonialCategory {
+      nodes {
+        ... on Division {
+          databaseId
+          name
+        }
+      }
+    }
     selectTag {
       nodes {
         databaseId
         name
-        slug
       }
     }
-
-    newsItems {
+    testimonialItems {
       nodes {
-        __typename
-        ... on Post { ...PostCard }
-        ... on Page {
-          id
+        ... on Testimonial {
           databaseId
           title
-          slug
-          uri
-        }
-        ... on MediaItem {
-          id
-          mediaItemUrl
-          altText
+          testimonials {
+            description
+            designation
+            image {
+              node {
+                title
+                sourceUrl
+              }
+            }
+          }
         }
       }
     }
-
     background
-    backgroundImage { node { sourceUrl } }
+    backgroundImage {
+      node {
+        sourceUrl
+      }
+    }
     disablePaddingTop
     disablePaddingBottom
     sectionId
@@ -247,12 +319,186 @@ export const NEWS_BLOCK = gql`
 `;
 
 
+/**
+ * Timeline Block
+ */
+export const TIMELINE_BLOCK = gql`
+  fragment TimelineBlock on PageLayoutsLayoutsTimelineSectionLayout {
+    titleSize
+    title
+    description
+    timelineBlocks {
+      ... on PageLayoutsLayoutsTimelineBlocksTimelineItemLayout {
+        title
+        subTitle
+        year
+        image {
+          node {
+            databaseId
+            title
+            sourceUrl
+          }
+        }
+      }
+    }
+    background
+    backgroundImage {
+      node {
+        title
+        sourceUrl
+      }
+    }
+    disablePaddingTop
+    disablePaddingBottom
+    sectionId
+    sectionClass
+  }
+`;
+
+
+/**
+ * Team Members Block
+ */
+export const TEAM_MEMBERS_BLOCK = gql`
+  fragment TeamMembersBlock on PageLayoutsLayoutsTeamSectionLayout {
+    titleSize
+    title
+    description
+    columnCount
+    members {
+      nodes {
+        databaseId
+        ... on Team {
+          teamLayout {
+            name
+            designation
+            description
+            profilePicture {
+              node {
+                title
+                sourceUrl
+              }
+            }
+          }
+        }
+      }
+    }
+    background
+    backgroundImage {
+      node {
+        title
+        sourceUrl
+      }
+    }
+    disablePaddingTop
+    disablePaddingBottom
+    sectionId
+    sectionClass
+  }
+`;
+
+/**
+ * FAQ Block
+ */
+export const FAQ_BLOCK = gql`
+  fragment FAQBlock on PageLayoutsLayoutsFaqSectionLayout {
+    titleSize
+    title
+    description
+    faqitems {
+      ... on PageLayoutsLayoutsFaqitemsItemLayout {
+        title
+        description
+      }
+    }
+    background
+    height
+    disablePaddingTop
+    disablePaddingBottom
+    sectionId
+    sectionClass
+  }
+`;
+
+
+/**
+ * MAP Block
+ */
+export const MAP_BLOCK = gql`
+  fragment MapBlock on PageLayoutsLayoutsMapSectionLayout {
+    address
+    email {
+      email
+    }
+    telephone {
+      areaCode
+      telephone
+    }
+    map {
+      latitude
+      longitude
+      zoom
+    }
+    mapMarker {
+      node {
+        sourceUrl
+        title
+      }
+    }
+    background
+    backgroundImage {
+      node {
+        sourceUrl
+      }
+    }
+    sectionId
+    sectionClass
+  }
+`;
+
+
+/**
+ * Contact Form Block
+ */
+export const CONTACT_FORM_BLOCK = gql`
+  fragment ContactFormBlock on PageLayoutsLayoutsContactFormSectionLayout {
+    titleSize
+    title
+    description
+    mainFormEmail
+    inquiryItem {
+      ... on PageLayoutsLayoutsInquiryItemInquiryItemsLayout {
+        inquiry
+        email
+      }
+    }
+    background
+    backgroundImage {
+      node {
+        sourceUrl
+      }
+    }
+    disablePaddingTop
+    disablePaddingBottom
+    sectionId
+    sectionClass
+  }
+`;
+
 /** Handy bundle if you want to inject all fragments at once */
 export const ALL_LAYOUT_FRAGMENTS = gql`
   ${HERO_SLIDER_BLOCK}
   ${IMAGE_ANIMATED_TEXT_BLOCK}
   ${VIDEO_BLOCK}
   ${SERVICES_LIST_BLOCK}
-  ${POST_CARD}
-  ${NEWS_BLOCK}
+  ${MASONRY_IMAGE_TEXT_BLOCK}
+  ${COUNTER_BLOCK}
+  ${LOGO_CAROUSEL_BLOCK}
+  ${NEWS_CAROUSEL_BLOCK}
+  ${TESTIMONIAL_BLOCK}
+  ${TIMELINE_BLOCK}
+  ${TEAM_MEMBERS_BLOCK}
+  ${FAQ_BLOCK}
+  ${MAP_BLOCK}
+  ${CONTACT_FORM_BLOCK}
 `;

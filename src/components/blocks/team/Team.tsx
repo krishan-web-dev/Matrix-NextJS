@@ -1,128 +1,143 @@
-import './team.scss';
+"use client";
 
-export default function Team() {
+import Image from "next/image";
+import { wpToSeoPath } from "@/lib/utils/wpToSeoPath";
+import "./team.scss";
+
+type TeamMemberNode = {
+    databaseId?: number | null;
+    teamLayout?: {
+        name?: string | null;
+        designation?: string | null;
+        description?: string | null;
+        profilePicture?: {
+            node?: {
+                sourceUrl?: string | null;
+                title?: string | null;
+            } | null;
+        } | null;
+    } | null;
+};
+
+type TeamBlockProps = {
+    title?: string | null;
+    titleSize?: string | null;
+    description?: string | null;
+    columnCount?: string[] | null;
+    members?: { nodes?: TeamMemberNode[] | null } | null;
+    background?: string[] | null;
+    backgroundImage?: { node?: { sourceUrl?: string | null } | null } | null;
+    disablePaddingTop?: boolean | null;
+    disablePaddingBottom?: boolean | null;
+    sectionId?: string | null;
+    sectionClass?: string | null;
+};
+
+export default function TeamBlock({
+    title,
+    titleSize,
+    description,
+    columnCount,
+    members,
+    background,
+    backgroundImage,
+    disablePaddingTop,
+    disablePaddingBottom,
+    sectionId,
+    sectionClass,
+}: TeamBlockProps) {
+
+    const ptClass = disablePaddingTop ? "pt-0" : "pt-16";
+    const pbClass = disablePaddingBottom ? "pb-0" : "pb-16";
+
+    const bgStyle =
+        backgroundImage?.node?.sourceUrl
+            ? { backgroundImage: `url(${wpToSeoPath(backgroundImage.node.sourceUrl)})` }
+            : background?.includes("bg_white")
+                ? { backgroundColor: "#fff" }
+                : {};
+
+    // Grid layout logic based on ACF field
+    const colClass =
+        columnCount?.includes("col2")
+            ? "col-md-6"
+            : columnCount?.includes("col3")
+                ? "col-md-4"
+                : "col-md-3";
+
     return (
-        <section className="full__screen team__members">
+        <section
+            id={sectionId ?? undefined}
+            className={`team__members relative ${ptClass} ${pbClass} ${sectionClass ?? ""}`}
+            style={bgStyle}
+        >
             <div className="container">
-                <div className="row">
+                <div className="row mb-10 text-center">
                     <div className="col-md-12">
-                        <div className="creative-title--wrap">
-                            <span className="creative-subtitle">Our Team, Your Success</span>
-                            <h2 className="creative-title">
-                                At Matrix Pvt Ltd, our team is dedicated to innovation, excellence, and your success. With expertise and passion, we work together to deliver solutions that drive growth and value.
+                        {title && (
+                            <h2
+                                className={
+                                    titleSize === "h2"
+                                        ? "text-3xl md:text-4xl font-bold"
+                                        : titleSize === "h3"
+                                            ? "text-2xl font-semibold"
+                                            : "text-xl font-medium"
+                                }
+                            >
+                                {title}
                             </h2>
-                        </div>
+                        )}
+                        {description && (
+                            <div
+                                className="max-w-3xl mx-auto mt-4 text-muted-foreground"
+                                dangerouslySetInnerHTML={{ __html: description }}
+                            />
+                        )}
                     </div>
                 </div>
-                <div className="row">
 
-                    {teams.map((team, index) => (
-                        <div className="col-md-3 creative-team--block" key={index}>
-                            <div className="inner-box">
-                                <div className="image-box">
-                                    <figure className="image">
-                                        <img src={team.image} alt={team.name} />
-                                    </figure>
-                                    <div className="info-box">
-                                        <h4 className="name">{team.name}</h4>
-                                        <span className="designation">{team.designation}</span>
-                                        <span className="share-icon">
-                                            <i className="uil uil-share-alt"></i>
-                                        </span>
-                                        <p>{team.description}</p>
-                                        <div className="social-links">
-                                            <a href={team.twitterUrl} aria-label="Twitter">
-                                                <i className="uil uil-twitter-alt"></i>
-                                            </a>
-                                            <a href={team.facebookUrl} aria-label="Facebook">
-                                                <i className="uil uil-facebook-f"></i>
-                                            </a>
+                <div className="row">
+                    {(members?.nodes ?? []).map((member) => {
+                        const imgSrc = member.teamLayout?.profilePicture?.node?.sourceUrl
+                            ? wpToSeoPath(member.teamLayout.profilePicture.node.sourceUrl)
+                            : undefined;
+
+                        return (
+                            <div className={`${colClass} creative-team--block`} key={member.databaseId}>
+                                <div className="inner-box">
+                                    <div className="image-box">
+                                        {imgSrc && (
+                                            <figure className="image">
+                                                <Image
+                                                    src={imgSrc}
+                                                    alt={member.teamLayout?.profilePicture?.node?.title || ""}
+                                                    width={400}
+                                                    height={400}
+                                                    loading="lazy"
+                                                    className="rounded-lg object-cover"
+                                                />
+                                            </figure>
+                                        )}
+                                        <div className="info-box">
+                                            {member.teamLayout?.name && (
+                                                <h4 className="name">{member.teamLayout.name}</h4>
+                                            )}
+                                            {member.teamLayout?.designation && (
+                                                <span className="designation">
+                                                    {member.teamLayout.designation}
+                                                </span>
+                                            )}
+                                            {member.teamLayout?.description && (
+                                                <p>{member.teamLayout.description}</p>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
-
+                        );
+                    })}
                 </div>
             </div>
         </section>
     );
 }
-
-const teams = [
-    {
-        id: 1,
-        name: 'Coriss Ambady',
-        image: '/img/avatars/t1.jpg',
-        designation: 'CEO',
-        twitterUrl: 'https://www.twitter.com',
-        facebookUrl: 'https://www.facebook.com',
-        description: 'Fermentum massa justo sit amet risus morbi leo.'
-    },
-    {
-        id: 2,
-        name: 'Cory Zamora',
-        image: '/img/avatars/t2.jpg',
-        designation: 'General Manager',
-        twitterUrl: 'https://www.twitter.com',
-        facebookUrl: 'https://www.facebook.com',
-        description: 'Fermentum massa justo sit amet risus morbi leo.'
-    },
-    {
-        id: 3,
-        name: 'Nikolas Brooten',
-        image: '/img/avatars/t3.jpg',
-        designation: 'Sales Manager',
-        dribbbleUrl: 'https://dribbble.com',
-        twitterUrl: 'https://www.twitter.com',
-        facebookUrl: 'https://www.facebook.com',
-        description: 'Fermentum massa justo sit amet risus morbi leo.'
-    },
-    {
-        id: 4,
-        name: 'Jackie Sanders',
-        image: '/img/avatars/t4.jpg',
-        designation: 'IT Manager',
-        twitterUrl: 'https://www.twitter.com',
-        facebookUrl: 'https://www.facebook.com',
-        description: 'Fermentum massa justo sit amet risus morbi leo.'
-    },
-    {
-        id: 5,
-        name: 'Cory Smith',
-        image: '/img/avatars/t5.jpg',
-        designation: 'Project Manager',
-        twitterUrl: 'https://www.twitter.com',
-        facebookUrl: 'https://www.facebook.com',
-        description: 'Fermentum massa justo sit amet risus morbi leo.'
-    },
-    {
-        id: 1,
-        name: 'Coriss Ambady',
-        image: '/img/avatars/t1.jpg',
-        designation: 'CEO',
-        twitterUrl: 'https://www.twitter.com',
-        facebookUrl: 'https://www.facebook.com',
-        description: 'Fermentum massa justo sit amet risus morbi leo.'
-    },
-    {
-        id: 2,
-        name: 'Cory Zamora',
-        image: '/img/avatars/t2.jpg',
-        designation: 'General Manager',
-        twitterUrl: 'https://www.twitter.com',
-        facebookUrl: 'https://www.facebook.com',
-        description: 'Fermentum massa justo sit amet risus morbi leo.'
-    },
-    {
-        id: 3,
-        name: 'Nikolas Brooten',
-        image: '/img/avatars/t3.jpg',
-        designation: 'Sales Manager',
-        dribbbleUrl: 'https://dribbble.com',
-        twitterUrl: 'https://www.twitter.com',
-        facebookUrl: 'https://www.facebook.com',
-        description: 'Fermentum massa justo sit amet risus morbi leo.'
-    }
-];
