@@ -24,6 +24,7 @@ import { ReactLenis } from "@/utils/lenis";
 
 
 import { ApolloProviderSSR } from "@/lib/apollo"; // re-export from src/lib/apollo/index.ts
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const nunito_sans = Nunito_Sans({ subsets: ["latin"], variable: "--font-nunito-sans", display: "swap" });
@@ -66,6 +67,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 
           {/* USED FOR PAGE SCROLL PROGRESS BAR */}
           <PageProgress />
+
+          <Toaster position="top-center" reverseOrder={false} />
 
           {/* USED FOR PROGRESS BAR ANIMATE */}
           <Progress />
