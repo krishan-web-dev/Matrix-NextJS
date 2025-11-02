@@ -54,10 +54,10 @@ export default function PageByUriClient({ uri }: { uri: string }) {
                         return <TeamBlock key={i} {...block} />;
                     case "PageLayoutsLayoutsFaqSectionLayout":
                         return <FAQBlock key={i} {...block} />;
-                    case "PageLayoutsLayoutsMapSectionLayout":
-                        return <MapBlock key={i} {...block} />;
+                    // case "PageLayoutsLayoutsMapSectionLayout":
+                    //     return <MapBlock key={i} {...block} />;
                     case "PageLayoutsLayoutsContactFormSectionLayout":
-                        return <ContactForm key={i} />;
+                        return <ContactForm key={i} {...block} />;
 
                     default:
                         console.warn(`⚠️ Unhandled block type: ${block.__typename}`);
