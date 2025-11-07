@@ -1,0 +1,16 @@
+.PhoneInput {
+    .PhoneInputCountry {
+        margin-left: 10px;
+        gap: 5px;
+    }
+
+    .PhoneInputInput {
+        border: none;
+
+        &:focus-visible,
+        &:focus {
+            outline: none;
+        }
+    }
+
+}

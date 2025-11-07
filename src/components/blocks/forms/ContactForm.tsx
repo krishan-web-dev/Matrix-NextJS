@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import clsx from "clsx";
-import toast from "react-hot-toast";
+import "./ContactForm.scss";
 
 type InquiryItem = {
     inquiry?: string | null;
@@ -66,10 +66,10 @@ export default function ContactForm({
     });
 
     const [selectedEmail, setSelectedEmail] = useState<string | null>(null);
-    const [countryCode, setCountryCode] = useState<string>("LK"); // default fallback
+    const [countryCode, setCountryCode] = useState<string>("LK");
     const [loadingCountry, setLoadingCountry] = useState<boolean>(true);
 
-    // 🌍 Detect country by IP, fallback to browser locale
+    // 🌍 Detect country by IP or fallback to locale
     useEffect(() => {
         const fetchCountry = async () => {
             try {
@@ -86,7 +86,6 @@ export default function ContactForm({
                 console.warn("IP lookup failed, falling back to browser locale.");
             }
 
-            // Fallback: browser locale
             try {
                 const locale = Intl.DateTimeFormat().resolvedOptions().locale;
                 const code = locale.split("-")[1]?.toUpperCase();
@@ -106,6 +105,15 @@ export default function ContactForm({
         setSelectedEmail(match?.email || null);
     };
 
+    // 🧩 Modal State
+    const [modal, setModal] = useState<{ open: boolean; success: boolean; message: string }>({
+        open: false,
+        success: true,
+        message: "",
+    });
+
+    const closeModal = () => setModal({ ...modal, open: false });
+
     const onSubmit = async (data: FormValues) => {
         const payload = {
             ...data,
@@ -122,14 +130,26 @@ export default function ContactForm({
 
             const result = await response.json();
             if (result.success) {
-                toast.success("✅ Message sent successfully!");
+                setModal({
+                    open: true,
+                    success: true,
+                    message: "✅ Your message has been sent successfully!",
+                });
                 reset();
             } else {
-                toast.error(result.message || "❌ Failed to send message.");
+                setModal({
+                    open: true,
+                    success: false,
+                    message: result.message || "❌ Failed to send message.",
+                });
             }
         } catch (error) {
             console.error("❌ Error submitting form:", error);
-            toast.error("Something went wrong while sending your message.");
+            setModal({
+                open: true,
+                success: false,
+                message: "Something went wrong while sending your message.",
+            });
         }
     };
 
@@ -229,7 +249,7 @@ export default function ContactForm({
                                     </div>
                                 </div>
 
-                                {/* Phone (with auto-detected country + override) */}
+                                {/* Phone (auto-detect country) */}
                                 <div className="col-md-6">
                                     <div className="form-floating mb-4">
                                         {loadingCountry ? (
@@ -251,7 +271,6 @@ export default function ContactForm({
                                                 )}
                                             />
                                         )}
-                                        <label>Phone Number</label>
                                         {errors.phone && (
                                             <small className="text-danger">{errors.phone.message}</small>
                                         )}
@@ -313,6 +332,26 @@ export default function ContactForm({
                     </div>
                 </div>
             </div>
+
+            {/* ✅ Modal */}
+            {modal.open && (
+                <div className="modal fade show d-block" style={{ background: "rgba(0,0,0,0.6)" }}>
+                    <div className="modal-dialog modal-dialog-centered">
+                        <div className="modal-content text-center p-4">
+                            <h5
+                                className={`fw-bold mb-3 ${modal.success ? "text-success" : "text-danger"
+                                    }`}
+                            >
+                                {modal.success ? "Success!" : "Error"}
+                            </h5>
+                            <p>{modal.message}</p>
+                            <button onClick={closeModal} className="btn btn-primary mt-2">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </section>
     );
 }

@@ -18,7 +18,7 @@ const TimelineBlock = dynamic(() => import("@/components/blocks/timeline/timelin
 const TeamBlock = dynamic(() => import("@/components/blocks/team/Team"), { ssr: true });
 const FAQBlock = dynamic(() => import("@/components/blocks/faq/FAQ2"), { ssr: true });
 const MapBlock = dynamic(() => import("@/components/blocks/map/map"), { ssr: false });
-const ContactForm = dynamic(() => import("@/components/blocks/form/ContactForm"), { ssr: false });
+const ContactForm = dynamic(() => import("@/components/blocks/forms/ContactForm"), { ssr: false });
 
 export default function PageByUriClient({ uri }: { uri: string }) {
     const { data, loading, error } = useQuery(PAGE_BY_URI, { variables: { uri } });
